@@ -50,6 +50,7 @@ CREATE TABLE DeliveryAddress (CustomerID INT,
 -- 5
 DROP TABLE IF EXISTS Combos;
 CREATE TABLE Combos (ComboNumber INT PRIMARY KEY,
+                     ComboName VARCHAR(255),
                      Entree INT,
                      Side INT,
                      Drink INT,
@@ -73,9 +74,37 @@ CREATE TABLE Orders (OrderNumber SERIAL PRIMARY KEY,
 -- 7
 DROP TABLE IF EXISTS Items;
 CREATE TABLE Items (ItemNumber INT PRIMARY KEY,
-                    Name VARCHAR(255),
-                    Price DECIMAL(10, 2),
-                    StockQuantity INT
+                    BreakfastItem INT DEFAULT 0
+);
+
+-- 7.1
+DROP TABLE IF EXISTS ItemPrices;
+CREATE TABLE ItemPrices (ItemNumber INT PRIMARY KEY,
+                         Price DECIMAL(10, 2)
+);
+
+-- 7.2
+DROP TABLE IF EXISTS ItemStock;
+CREATE TABLE ItemStock (ItemNumber INT PRIMARY KEY,
+                        StockQuantity INT
+);
+
+-- 7.3
+DROP TABLE IF EXISTS ItemNames;
+CREATE TABLE ItemNames (ItemNumber INT PRIMARY KEY,
+                        Name VARCHAR(255)
+);
+
+-- 8
+DROP TABLE IF EXISTS Sauces;
+CREATE TABLE Sauces (ItemNumber INT PRIMARY KEY,
+                     MaximumQuantity INT
+);
+
+-- 11
+DROP TABLE IF EXISTS Drinks;
+CREATE TABLE Drinks (ItemNumber INT PRIMARY KEY,
+                     HotDrink INT DEFAULT 0
 );
 
 -- 14
@@ -98,7 +127,7 @@ CREATE TABLE CreditCard (CreditCardNumber INT PRIMARY KEY,
 -- 16
 DROP TABLE IF EXISTS ItemNutrition;
 CREATE TABLE ItemNutrition (ItemNumber SERIAL PRIMARY KEY,
-                            Calories VARCHAR(255)
+                            Calories VARCHAR(255),
                             Vegetarian INT DEFAULT 0,
                             Vegan INT DEFAULT 0
 );
