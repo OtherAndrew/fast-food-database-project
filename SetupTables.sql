@@ -1,5 +1,6 @@
 DROP DATABASE IF EXISTS fast_food;
 CREATE DATABASE fast_food;
+USE fast_food;
 
 -- 1
 DROP TABLE IF EXISTS Customers;
@@ -13,7 +14,7 @@ CREATE TABLE Address (StreetAddress VARCHAR(255),
                       City VARCHAR(255),
                       ZIP INT,
                       State VARCHAR(255),
-                      Country VARCHAR(255),
+                      Country VARCHAR(255)
 );
 
 -- 3
@@ -30,7 +31,7 @@ CREATE TABLE DeliveryAddress (StreetAddress VARCHAR(255),
                       City VARCHAR(255),
                       ZIP INT,
                       State VARCHAR(255),
-                      Country VARCHAR(255),
+                      Country VARCHAR(255)
 );
 
 -- 5
@@ -38,11 +39,12 @@ DROP TABLE IF EXISTS Combos;
 CREATE TABLE Combos (ComboNumber SERIAL PRIMARY KEY,
                      Entree INT,
                      Side INT,
-                     Drink INT
-                     Price DECIMAL(10, 2),
+                     Drink INT,
+                     Price DECIMAL(10,2)/*
+                     ,
                      FOREIGN KEY(Entree) REFERENCES Entrees(Entree),
                      FOREIGN KEY(Side) REFERENCES Sides(Side),
-                     FOREIGN KEY(Drink) REFERENCES Drinks(Drink)
+                     FOREIGN KEY(Drink) REFERENCES Drinks(Drink)*/
 );
 
 -- 6
@@ -63,7 +65,7 @@ CREATE TABLE Items (ItemNumber SERIAL PRIMARY KEY,
 );
 
 --- Example code below
-
+/*
 DROP TABLE IF EXISTS Contacts;
 CREATE TABLE Contacts(PrimaryKey SERIAL PRIMARY KEY,
                       MemberID_A INT NOT NULL,
@@ -111,3 +113,4 @@ CREATE TABLE Push_Token (KeyID SERIAL PRIMARY KEY,
                         Token VARCHAR(255),
                         FOREIGN KEY(MemberID) REFERENCES Members(MemberID)
 );
+*/
