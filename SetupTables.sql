@@ -5,7 +5,10 @@ USE fast_food;
 -- 1
 DROP TABLE IF EXISTS Customers;
 CREATE TABLE Customers (CustomerID SERIAL PRIMARY KEY,
-                        Address VARCHAR(255)
+                        Name VARCHAR(255),
+                        Address VARCHAR(255),
+                        RewardsPoints INT DEFAULT 0,
+                        PreferredLocation INT
 );
 
 -- 2
@@ -19,24 +22,34 @@ CREATE TABLE Address (StreetAddress VARCHAR(255),
 
 -- 3
 DROP TABLE IF EXISTS StoreLocation;
-CREATE TABLE StoreLocation (StoreNumber SERIAL PRIMARY KEY,
-                     Name VARCHAR(255),
-                     Address VARCHAR(255),
-                     Manager VARCHAR(255)
+CREATE TABLE StoreLocation (StoreNumber INT PRIMARY KEY,
+                            Name VARCHAR(255),
+                            Manager VARCHAR(255)
+);
+
+-- 3.1
+DROP TABLE IF EXISTS StoreAddress;
+CREATE TABLE StoreAddress (StoreNumber INT PRIMARY KEY,
+                           StreetAddress VARCHAR(255),
+                           City VARCHAR(255),
+                           ZIP INT,
+                           State VARCHAR(255),
+                           Country VARCHAR(255)
 );
 
 -- 4
 DROP TABLE IF EXISTS DeliveryAddress;
-CREATE TABLE DeliveryAddress (StreetAddress VARCHAR(255),
-                      City VARCHAR(255),
-                      ZIP INT,
-                      State VARCHAR(255),
-                      Country VARCHAR(255)
+CREATE TABLE DeliveryAddress (CustomerID INT,
+                              StreetAddress VARCHAR(255),
+                              City VARCHAR(255),
+                              ZIP INT,
+                              State VARCHAR(255),
+                              Country VARCHAR(255)
 );
 
 -- 5
 DROP TABLE IF EXISTS Combos;
-CREATE TABLE Combos (ComboNumber SERIAL PRIMARY KEY,
+CREATE TABLE Combos (ComboNumber INT PRIMARY KEY,
                      Entree INT,
                      Side INT,
                      Drink INT,
@@ -51,18 +64,51 @@ CREATE TABLE Combos (ComboNumber SERIAL PRIMARY KEY,
 DROP TABLE IF EXISTS Orders;
 CREATE TABLE Orders (OrderNumber SERIAL PRIMARY KEY,
                      Item INT,
+                     OrderQuantity INT,
                      PickupMethod VARCHAR(255),
+                     OrderTime TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
                      Fulfilled INT DEFAULT 0
 );
 
 -- 7
 DROP TABLE IF EXISTS Items;
-CREATE TABLE Items (ItemNumber SERIAL PRIMARY KEY,
+CREATE TABLE Items (ItemNumber INT PRIMARY KEY,
                     Name VARCHAR(255),
                     Price DECIMAL(10, 2),
-                    PickupMethod VARCHAR(255),
-                    Fulfilled INT DEFAULT 0
+                    StockQuantity INT
 );
+
+-- 14
+DROP TABLE IF EXISTS OrderPayment;
+CREATE TABLE OrderPayment (OrderNumber INT PRIMARY KEY,
+                           Price DECIMAL(10, 2),
+                           PaymentMethod VARCHAR(255)
+);
+
+-- 15
+DROP TABLE IF EXISTS CreditCard;
+CREATE TABLE CreditCard (CreditCardNumber INT PRIMARY KEY,
+                         FirstName VARCHAR(255),
+                         LastName VARCHAR(255),
+                         ExpirationMonth INT,
+                         ExpirationYear INT,
+                         SecurityCode INT
+);
+
+-- 16
+DROP TABLE IF EXISTS ItemNutrition;
+CREATE TABLE ItemNutrition (ItemNumber SERIAL PRIMARY KEY,
+                            Calories VARCHAR(255)
+                            Vegetarian INT DEFAULT 0,
+                            Vegan INT DEFAULT 0
+);
+
+-- 17
+DROP TABLE IF EXISTS PickupMethod;
+CREATE TABLE PickupMethod (OrderNumber INT PRIMARY KEY,
+                           Method VARCHAR(255),
+                           PickupTime TIMESTAMP
+); 
 
 --- Example code below
 /*
