@@ -2,51 +2,46 @@ DROP DATABASE IF EXISTS fast_food;
 CREATE DATABASE fast_food;
 USE fast_food;
 
--- 1
-
-
 -- 3
-DROP TABLE IF EXISTS StoreLocation;
-CREATE TABLE StoreLocation (StoreNumber INT PRIMARY KEY,
-                            Name VARCHAR(255),
-                            Manager VARCHAR(255)
+DROP TABLE IF EXISTS Address;
+CREATE TABLE Address (AddressID INT PRIMARY KEY,
+                      StreetAddress VARCHAR(255),
+                      City VARCHAR(255),
+                      ZIP INT,
+                      State VARCHAR(255),
+                      Country VARCHAR(255)
 );
 
-DROP TABLE IF EXISTS StoreAddress;
-CREATE TABLE StoreAddress (StoreNumber INT PRIMARY KEY,
-                           StreetAddress VARCHAR(255),
-                           City VARCHAR(255),
-                           ZIP INT,
-                           State VARCHAR(255),
-                           Country VARCHAR(255)
+-- 5
+DROP TABLE IF EXISTS StoreBranch;
+CREATE TABLE StoreBranch (StoreNumber INT PRIMARY KEY,
+                          AddressID INT,
+                          Manager VARCHAR(255),
+                          FOREIGN KEY(AddressID) REFERENCES Address(AddressID)
 );
 
+-- 1
 DROP TABLE IF EXISTS Customers;
 CREATE TABLE Customers (CustomerID INT PRIMARY KEY,
                         Name VARCHAR(255),
-                        Address VARCHAR(255),
-                        RewardsPoints INT DEFAULT 0,
-                        PreferredLocation INT,
-                        FOREIGN KEY(PreferredLocation) REFERENCES StoreLocation(StoreNumber)
+                        RewardsPoints INT DEFAULT 0
 );
 
-DROP TABLE IF EXISTS CreditCard;
-CREATE TABLE CreditCard (CreditCardNumber INT PRIMARY KEY,
-                         FirstName VARCHAR(255) NOT NULL,
-                         LastName VARCHAR(255) NOT NULL,
-                         ExpirationMonth INT NOT NULL,
-                         ExpirationYear INT NOT NULL,
-                         SecurityCode INT NOT NULL
+-- 2
+DROP TABLE IF EXISTS CustomerAddress;
+CREATE TABLE CustomerAddress (CustomerID INT NOT NULL,
+                              AddressID INT NOT NULL,
+                              FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID),
+                              FOREIGN KEY(AddressID) REFERENCES Address(AddressID)
 );
 
--- 14
-DROP TABLE IF EXISTS OrderPayment;
-CREATE TABLE OrderPayment (OrderNumber INT NOT NULL,
-                           PaymentAmount INT,
-                           PaymentMethod VARCHAR(255),
-                           CreditCardNumber INT,
-                           FOREIGN KEY(CreditCardNumber) REFERENCES CreditCard(CreditCardNumber)
-);
+DROP TABLE IF EXISTS PaymentMethod;
+CREATE TABLE PaymentMethod (Method VARCHAR(255) PRIMARY KEY);
+
+INSERT INTO PaymentMethod(Method) VALUES ('Cash');
+INSERT INTO PaymentMethod(Method) VALUES ('Credit card');
+INSERT INTO PaymentMethod(Method) VALUES ('Gift card');
+INSERT INTO PaymentMethod(Method) VALUES ('Rewards');
 
 DROP TABLE IF EXISTS PickupMethod;
 CREATE TABLE PickupMethod (Method VARCHAR(255) PRIMARY KEY);
@@ -56,71 +51,96 @@ INSERT INTO PickupMethod(Method) VALUES ('Delivery');
 INSERT INTO PickupMethod(Method) VALUES ('Walk in');
 INSERT INTO PickupMethod(Method) VALUES ('Dine in');
 
+-- 6
 DROP TABLE IF EXISTS Orders;
 CREATE TABLE Orders (OrderNumber INT PRIMARY KEY,
                      StoreNumber INT,
                      CustomerID INT,
                      PickupMethod VARCHAR(255),
+                     PaymentMethod VARCHAR(255),
                      OrderTime TIMESTAMP,
-                     Fulfilled INT DEFAULT 0,
-                     FOREIGN KEY(StoreNumber) REFERENCES StoreLocation(StoreNumber),
+                     FOREIGN KEY(StoreNumber) REFERENCES StoreBranch(StoreNumber),
                      FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID),
-                     FOREIGN KEY(PickupMethod) REFERENCES PickupMethod(Method)
+                     FOREIGN KEY(PickupMethod) REFERENCES PickupMethod(Method),
+                     FOREIGN KEY(PaymentMethod) REFERENCES PaymentMethod(Method)
 );
 
-DROP TABLE IF EXISTS DeliveryAddress;
-CREATE TABLE DeliveryAddress (OrderNumber INT PRIMARY KEY,
-                              StreetAddress VARCHAR(255),
-                              City VARCHAR(255),
-                              ZIP INT,
-                              State VARCHAR(255),
-                              Country VARCHAR(255)
-);
-
--- 7
+-- 8
 DROP TABLE IF EXISTS Items;
 CREATE TABLE Items (ItemNumber INT PRIMARY KEY,
                     ItemName VARCHAR(255),
-                    Price DECIMAL(10, 2),
-                    StockQuantity INT
+                    ItemDescription VARCHAR(255),
+                    Price DECIMAL(10, 2)
 );
 
-DROP TABLE IF EXISTS BreakfastItems;
-CREATE TABLE BreakfastItems (ItemNumber INT PRIMARY KEY);
+DROP TABLE IF EXISTS ItemSize;
+CREATE TABLE ItemSize (Size VARCHAR(255) PRIMARY KEY);
 
-DROP TABLE IF EXISTS OrderItems;
-CREATE TABLE OrderItems (OrderNumber INT NOT NULL,
-                         ItemNumber INT NOT NULL,
-                         Modifications VARCHAR(255),
-                         OrderQuantity INT DEFAULT 1,
-                         FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
+INSERT INTO ItemSize(Size) VALUES ('Small');
+INSERT INTO ItemSize(Size) VALUES ('Medium');
+INSERT INTO ItemSize(Size) VALUES ('Large');
+
+DROP TABLE IF EXISTS EntreeItems;
+CREATE TABLE EntreeItems (ItemNumber INT PRIMARY KEY,
+                          FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
+);
+
+DROP TABLE IF EXISTS SideItems;
+CREATE TABLE SideItems (ItemNumber INT PRIMARY KEY,
+                        Size VARCHAR(255),
+                        FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
+                        FOREIGN KEY(Size) REFERENCES ItemSize(Size)
+);
+
+DROP TABLE IF EXISTS IceLevel;
+CREATE TABLE IceLevel (Level VARCHAR(255) PRIMARY KEY);
+
+INSERT INTO IceLevel(Level) VALUES ('Full');
+INSERT INTO IceLevel(Level) VALUES ('Half');
+INSERT INTO IceLevel(Level) VALUES ('No');
+
+DROP TABLE IF EXISTS DrinkItems;
+CREATE TABLE DrinkItems (ItemNumber INT PRIMARY KEY,
+                         Size VARCHAR(255),
+                         Ice VARCHAR(255) DEFAULT 'Full',
+                         FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
+                         FOREIGN KEY(Size) REFERENCES ItemSize(Size),
+                         FOREIGN KEY(Ice) REFERENCES IceLevel(Level)
+);
+
+DROP TABLE IF EXISTS LimitedItems;
+CREATE TABLE LimitedItems (ItemNumber INT PRIMARY KEY,
+                           Season VARCHAR(255),
+                           FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
+);
+
+-- 15
+DROP TABLE IF EXISTS BreakfastItems;
+CREATE TABLE BreakfastItems (ItemNumber INT PRIMARY KEY,
+                             FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
 DROP TABLE IF EXISTS Combos;
 CREATE TABLE Combos (ItemNumber INT PRIMARY KEY,
-                     EntreeItemNumber INT,
-                     SideItemNumber INT,
-                     DrinkItemNumber INT,
-                     FOREIGN KEY(EntreeItemNumber) REFERENCES Items(ItemNumber),
-                     FOREIGN KEY(SideItemNumber) REFERENCES Items(ItemNumber),
-                     FOREIGN KEY(DrinkItemNumber) REFERENCES Items(ItemNumber)
+                     EntreeItemNumber INT NOT NULL,
+                     SideItemNumber INT NOT NULL,
+                     DrinkItemNumber INT NOT NULL,
+                     FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
+                     FOREIGN KEY(EntreeItemNumber) REFERENCES EntreeItems(ItemNumber),
+                     FOREIGN KEY(SideItemNumber) REFERENCES SideItems(ItemNumber),
+                     FOREIGN KEY(DrinkItemNumber) REFERENCES DrinkItems(ItemNumber)
 );
 
--- 8
-DROP TABLE IF EXISTS Sauces;
-CREATE TABLE Sauces (ItemNumber INT PRIMARY KEY,
-                     MaximumQuantity INT
+DROP TABLE IF EXISTS OrderItems;
+CREATE TABLE OrderItems (OrderNumber INT NOT NULL,
+                         ItemNumber INT NOT NULL,
+                         Quantity INT DEFAULT 1,
+                         Modifications VARCHAR(255),
+                         FOREIGN KEY(OrderNumber) REFERENCES Orders(OrderNumber),
+                         FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
--- 11
-DROP TABLE IF EXISTS Drinks;
-CREATE TABLE Drinks (ItemNumber INT PRIMARY KEY,
-                     Size VARCHAR(255),
-                     HotDrink INT DEFAULT 0
-);
--- 15
-
--- 16
+-- 17
 DROP TABLE IF EXISTS ItemNutrition;
 CREATE TABLE ItemNutrition (ItemNumber INT PRIMARY KEY,
                             Calories INT,
@@ -128,6 +148,7 @@ CREATE TABLE ItemNutrition (ItemNumber INT PRIMARY KEY,
                             Vegan INT DEFAULT 0
 );
 
+-- 16
 DROP TABLE IF EXISTS RewardItems;
 CREATE TABLE RewardItems (ItemNumber INT PRIMARY KEY,
                           PointCost INT
