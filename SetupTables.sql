@@ -38,18 +38,26 @@ CREATE TABLE CustomerAddress (CustomerID BIGINT UNSIGNED NOT NULL,
 DROP TABLE IF EXISTS PaymentMethod;
 CREATE TABLE PaymentMethod (Method VARCHAR(255) PRIMARY KEY);
 
-INSERT INTO PaymentMethod(Method) VALUES ('Cash');
-INSERT INTO PaymentMethod(Method) VALUES ('Credit card');
-INSERT INTO PaymentMethod(Method) VALUES ('Gift card');
-INSERT INTO PaymentMethod(Method) VALUES ('Rewards');
+INSERT INTO 
+    PaymentMethod(Method)
+VALUES 
+    ('Cash'),
+    ('Credit card'),
+    ('Gift card'),
+    ('Rewards')
+;
 
 DROP TABLE IF EXISTS PickupMethod;
 CREATE TABLE PickupMethod (Method VARCHAR(255) PRIMARY KEY);
 
-INSERT INTO PickupMethod(Method) VALUES ('Drive-thru');
-INSERT INTO PickupMethod(Method) VALUES ('Delivery');
-INSERT INTO PickupMethod(Method) VALUES ('Walk in');
-INSERT INTO PickupMethod(Method) VALUES ('Dine in');
+INSERT INTO 
+    PickupMethod(Method)
+VALUES 
+    ('Drive-thru'),
+    ('Delivery'),
+    ('Walk in'),
+    ('Dine in')
+;
 
 -- 6
 DROP TABLE IF EXISTS Orders;
@@ -68,45 +76,83 @@ CREATE TABLE Orders (OrderNumber SERIAL PRIMARY KEY,
 -- 8
 DROP TABLE IF EXISTS Items;
 CREATE TABLE Items (ItemNumber SERIAL PRIMARY KEY,
-                    ItemName VARCHAR(255),
-                    ItemDescription VARCHAR(255),
+                    ItemName VARCHAR(255) UNIQUE,
                     Price DECIMAL(10, 2)
 );
 
-DROP TABLE IF EXISTS ItemSize;
-CREATE TABLE ItemSize (Size VARCHAR(255) PRIMARY KEY);
-
-INSERT INTO ItemSize(Size) VALUES ('Small');
-INSERT INTO ItemSize(Size) VALUES ('Medium');
-INSERT INTO ItemSize(Size) VALUES ('Large');
+INSERT INTO 
+    Items(ItemName, Price)
+VALUES
+    ('Hamburger', 2.99),
+    ('Cheeseburger', 3.99),
+    ('Double Hamburger', 4.99),
+    ('Double Cheeseburger', 5.99),
+    ('Small Fries', 1.99),
+    ('Large Fries', 2.99),
+    ('Onion Rings', 3.99),
+    ('Pickle Chips', 3.99),
+    ('Small Drink', 0.99),
+    ('Medium Drink', 1.99),
+    ('Large Drink', 2.99),
+    ('Sausage Breakfast Sandwich', 2.99),
+    ('Bacon Breakfast Sandwich', 2.99),
+    ('Hash Browns', 1.99),
+    ('Halloween Burger', 5.99),
+    ('Christmas Burger', 5.99),
+    ('Hamburger Combo', 8.99),
+    ('Cheeseburger Combo', 8.99),
+    ('Double Hamburger Combo', 9.99),
+    ('Double Cheeseburger Combo', 9.99),
+    ('Sausage Breakfast Combo', 7.99),
+    ('Bacon Breakfast Combo', 7.99),
+;
 
 DROP TABLE IF EXISTS EntreeItems;
 CREATE TABLE EntreeItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                           FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
+INSERT INTO 
+    EntreeItems(ItemNumber)
+VALUES 
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Hamburger')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Cheeseburger')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Sandwich')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Bacon Breakfast Sandwich')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Halloween Burger')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Christmas Burger'))
+;
+
 DROP TABLE IF EXISTS SideItems;
-CREATE TABLE SideItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
-                        Size VARCHAR(255),
-                        FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
-                        FOREIGN KEY(Size) REFERENCES ItemSize(Size)
+CREATE TABLE SideItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY
+                        FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
-DROP TABLE IF EXISTS IceLevel;
-CREATE TABLE IceLevel (Level VARCHAR(255) PRIMARY KEY);
-
-INSERT INTO IceLevel(Level) VALUES ('Full');
-INSERT INTO IceLevel(Level) VALUES ('Half');
-INSERT INTO IceLevel(Level) VALUES ('No');
+INSERT INTO 
+    SideItems(ItemNumber)
+VALUES 
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Small Fries')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Large Fries')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Onion Rings')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Pickle Chips')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Hash Browns'))
+;
 
 DROP TABLE IF EXISTS DrinkItems;
 CREATE TABLE DrinkItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
-                         Size VARCHAR(255),
-                         Ice VARCHAR(255) DEFAULT 'Full',
                          FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
-                         FOREIGN KEY(Size) REFERENCES ItemSize(Size),
                          FOREIGN KEY(Ice) REFERENCES IceLevel(Level)
 );
+
+INSERT INTO 
+    DrinkItems(ItemNumber)
+VALUES 
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Small Drink')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Large Drink'))
+;
 
 DROP TABLE IF EXISTS LimitedItems;
 CREATE TABLE LimitedItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
@@ -114,11 +160,26 @@ CREATE TABLE LimitedItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                            FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
+INSERT INTO 
+    LimitedItems(ItemNumber)
+VALUES 
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Halloween Burger')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Christmas Burger'))
+;
+
 -- 15
 DROP TABLE IF EXISTS BreakfastItems;
 CREATE TABLE BreakfastItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                              FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
+
+INSERT INTO 
+    BreakfastItems(ItemNumber)
+VALUES 
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Sandwich')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Bacon Breakfast Sandwich')),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Hash Browns'))
+;
 
 DROP TABLE IF EXISTS Combos;
 CREATE TABLE Combos (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
@@ -153,56 +214,3 @@ DROP TABLE IF EXISTS RewardItems;
 CREATE TABLE RewardItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                           PointCost INT
 );
-
--- 17
-
---- Example code below
-/*
-DROP TABLE IF EXISTS Contacts;
-CREATE TABLE Contacts(PrimaryKey SERIAL PRIMARY KEY,
-                      MemberID_A INT NOT NULL,
-                      MemberID_B INT NOT NULL,
-                      Verified INT DEFAULT 0,
-                      FOREIGN KEY(MemberID_A) REFERENCES Members(MemberID),
-                      FOREIGN KEY(MemberID_B) REFERENCES Members(MemberID)
-);
-
-DROP TABLE IF EXISTS Chats;
-CREATE TABLE Chats (ChatID SERIAL PRIMARY KEY,
-                    Name VARCHAR(255)
-);
-
-DROP TABLE IF EXISTS ChatMembers;
-CREATE TABLE ChatMembers (ChatID INT NOT NULL,
-                          MemberID INT NOT NULL,
-                          FOREIGN KEY(MemberID) REFERENCES Members(MemberID),
-                          FOREIGN KEY(ChatID) REFERENCES Chats(ChatID)
-);
-
-DROP TABLE IF EXISTS Messages;
-CREATE TABLE Messages (PrimaryKey SERIAL PRIMARY KEY,
-                       ChatID INT,
-                       Message VARCHAR(255),
-                       MemberID INT,
-                       FOREIGN KEY(MemberID) REFERENCES Members(MemberID),
-                       FOREIGN KEY(ChatID) REFERENCES Chats(ChatID),
-                       TimeStamp TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
-);
-
-DROP TABLE IF EXISTS Locations;
-CREATE TABLE Locations (PrimaryKey SERIAL PRIMARY KEY,
-                        MemberID INT,
-                        Nickname VARCHAR(255),
-                        Lat DECIMAL,
-                        Long DECIMAL,
-                        ZIP INT,
-                        FOREIGN KEY(MemberID) REFERENCES Members(MemberID)
-);
-
-DROP TABLE IF EXISTS Push_Token;
-CREATE TABLE Push_Token (KeyID SERIAL PRIMARY KEY,
-                        MemberID INT NOT NULL UNIQUE,
-                        Token VARCHAR(255),
-                        FOREIGN KEY(MemberID) REFERENCES Members(MemberID)
-);
-*/
