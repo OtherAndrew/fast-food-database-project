@@ -4,7 +4,7 @@ USE fast_food;
 
 -- 3
 DROP TABLE IF EXISTS Address;
-CREATE TABLE Address (AddressID INT PRIMARY KEY,
+CREATE TABLE Address (AddressID SERIAL PRIMARY KEY,
                       StreetAddress VARCHAR(255),
                       City VARCHAR(255),
                       ZIP INT,
@@ -14,23 +14,23 @@ CREATE TABLE Address (AddressID INT PRIMARY KEY,
 
 -- 5
 DROP TABLE IF EXISTS StoreBranch;
-CREATE TABLE StoreBranch (StoreNumber INT PRIMARY KEY,
-                          AddressID INT,
+CREATE TABLE StoreBranch (StoreNumber SERIAL PRIMARY KEY,
+                          AddressID BIGINT UNSIGNED,
                           Manager VARCHAR(255),
                           FOREIGN KEY(AddressID) REFERENCES Address(AddressID)
 );
 
 -- 1
 DROP TABLE IF EXISTS Customers;
-CREATE TABLE Customers (CustomerID INT PRIMARY KEY,
+CREATE TABLE Customers (CustomerID SERIAL PRIMARY KEY,
                         Name VARCHAR(255),
                         RewardsPoints INT DEFAULT 0
 );
 
 -- 2
 DROP TABLE IF EXISTS CustomerAddress;
-CREATE TABLE CustomerAddress (CustomerID INT NOT NULL,
-                              AddressID INT NOT NULL,
+CREATE TABLE CustomerAddress (CustomerID BIGINT UNSIGNED NOT NULL,
+                              AddressID BIGINT UNSIGNED NOT NULL,
                               FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID),
                               FOREIGN KEY(AddressID) REFERENCES Address(AddressID)
 );
@@ -53,9 +53,9 @@ INSERT INTO PickupMethod(Method) VALUES ('Dine in');
 
 -- 6
 DROP TABLE IF EXISTS Orders;
-CREATE TABLE Orders (OrderNumber INT PRIMARY KEY,
-                     StoreNumber INT,
-                     CustomerID INT,
+CREATE TABLE Orders (OrderNumber SERIAL PRIMARY KEY,
+                     StoreNumber BIGINT UNSIGNED,
+                     CustomerID BIGINT UNSIGNED,
                      PickupMethod VARCHAR(255),
                      PaymentMethod VARCHAR(255),
                      OrderTime TIMESTAMP,
@@ -67,7 +67,7 @@ CREATE TABLE Orders (OrderNumber INT PRIMARY KEY,
 
 -- 8
 DROP TABLE IF EXISTS Items;
-CREATE TABLE Items (ItemNumber INT PRIMARY KEY,
+CREATE TABLE Items (ItemNumber SERIAL PRIMARY KEY,
                     ItemName VARCHAR(255),
                     ItemDescription VARCHAR(255),
                     Price DECIMAL(10, 2)
@@ -81,12 +81,12 @@ INSERT INTO ItemSize(Size) VALUES ('Medium');
 INSERT INTO ItemSize(Size) VALUES ('Large');
 
 DROP TABLE IF EXISTS EntreeItems;
-CREATE TABLE EntreeItems (ItemNumber INT PRIMARY KEY,
+CREATE TABLE EntreeItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                           FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
 DROP TABLE IF EXISTS SideItems;
-CREATE TABLE SideItems (ItemNumber INT PRIMARY KEY,
+CREATE TABLE SideItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                         Size VARCHAR(255),
                         FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
                         FOREIGN KEY(Size) REFERENCES ItemSize(Size)
@@ -100,7 +100,7 @@ INSERT INTO IceLevel(Level) VALUES ('Half');
 INSERT INTO IceLevel(Level) VALUES ('No');
 
 DROP TABLE IF EXISTS DrinkItems;
-CREATE TABLE DrinkItems (ItemNumber INT PRIMARY KEY,
+CREATE TABLE DrinkItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                          Size VARCHAR(255),
                          Ice VARCHAR(255) DEFAULT 'Full',
                          FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
@@ -109,22 +109,22 @@ CREATE TABLE DrinkItems (ItemNumber INT PRIMARY KEY,
 );
 
 DROP TABLE IF EXISTS LimitedItems;
-CREATE TABLE LimitedItems (ItemNumber INT PRIMARY KEY,
+CREATE TABLE LimitedItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                            Season VARCHAR(255),
                            FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
 -- 15
 DROP TABLE IF EXISTS BreakfastItems;
-CREATE TABLE BreakfastItems (ItemNumber INT PRIMARY KEY,
+CREATE TABLE BreakfastItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                              FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
 DROP TABLE IF EXISTS Combos;
-CREATE TABLE Combos (ItemNumber INT PRIMARY KEY,
-                     EntreeItemNumber INT NOT NULL,
-                     SideItemNumber INT NOT NULL,
-                     DrinkItemNumber INT NOT NULL,
+CREATE TABLE Combos (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
+                     EntreeItemNumber BIGINT UNSIGNED NOT NULL,
+                     SideItemNumber BIGINT UNSIGNED NOT NULL,
+                     DrinkItemNumber BIGINT UNSIGNED NOT NULL,
                      FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber),
                      FOREIGN KEY(EntreeItemNumber) REFERENCES EntreeItems(ItemNumber),
                      FOREIGN KEY(SideItemNumber) REFERENCES SideItems(ItemNumber),
@@ -132,8 +132,8 @@ CREATE TABLE Combos (ItemNumber INT PRIMARY KEY,
 );
 
 DROP TABLE IF EXISTS OrderItems;
-CREATE TABLE OrderItems (OrderNumber INT NOT NULL,
-                         ItemNumber INT NOT NULL,
+CREATE TABLE OrderItems (OrderNumber BIGINT UNSIGNED NOT NULL,
+                         ItemNumber BIGINT UNSIGNED NOT NULL,
                          Quantity INT DEFAULT 1,
                          Modifications VARCHAR(255),
                          FOREIGN KEY(OrderNumber) REFERENCES Orders(OrderNumber),
@@ -142,7 +142,7 @@ CREATE TABLE OrderItems (OrderNumber INT NOT NULL,
 
 -- 17
 DROP TABLE IF EXISTS ItemNutrition;
-CREATE TABLE ItemNutrition (ItemNumber INT PRIMARY KEY,
+CREATE TABLE ItemNutrition (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                             Calories INT,
                             Vegetarian INT DEFAULT 0,
                             Vegan INT DEFAULT 0
@@ -150,7 +150,7 @@ CREATE TABLE ItemNutrition (ItemNumber INT PRIMARY KEY,
 
 -- 16
 DROP TABLE IF EXISTS RewardItems;
-CREATE TABLE RewardItems (ItemNumber INT PRIMARY KEY,
+CREATE TABLE RewardItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                           PointCost INT
 );
 
