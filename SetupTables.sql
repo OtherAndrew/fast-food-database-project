@@ -3,13 +3,7 @@ CREATE DATABASE fast_food;
 USE fast_food;
 
 -- 1
-DROP TABLE IF EXISTS Customers;
-CREATE TABLE Customers (CustomerID INT PRIMARY KEY,
-                        Name VARCHAR(255),
-                        Address VARCHAR(255),
-                        RewardsPoints INT DEFAULT 0,
-                        PreferredLocation INT
-);
+
 
 -- 3
 DROP TABLE IF EXISTS StoreLocation;
@@ -18,7 +12,6 @@ CREATE TABLE StoreLocation (StoreNumber INT PRIMARY KEY,
                             Manager VARCHAR(255)
 );
 
--- 3.1
 DROP TABLE IF EXISTS StoreAddress;
 CREATE TABLE StoreAddress (StoreNumber INT PRIMARY KEY,
                            StreetAddress VARCHAR(255),
@@ -28,7 +21,53 @@ CREATE TABLE StoreAddress (StoreNumber INT PRIMARY KEY,
                            Country VARCHAR(255)
 );
 
--- 4
+DROP TABLE IF EXISTS Customers;
+CREATE TABLE Customers (CustomerID INT PRIMARY KEY,
+                        Name VARCHAR(255),
+                        Address VARCHAR(255),
+                        RewardsPoints INT DEFAULT 0,
+                        PreferredLocation INT,
+                        FOREIGN KEY(PreferredLocation) REFERENCES StoreLocation(StoreNumber)
+);
+
+DROP TABLE IF EXISTS CreditCard;
+CREATE TABLE CreditCard (CreditCardNumber INT PRIMARY KEY,
+                         FirstName VARCHAR(255) NOT NULL,
+                         LastName VARCHAR(255) NOT NULL,
+                         ExpirationMonth INT NOT NULL,
+                         ExpirationYear INT NOT NULL,
+                         SecurityCode INT NOT NULL
+);
+
+-- 14
+DROP TABLE IF EXISTS OrderPayment;
+CREATE TABLE OrderPayment (OrderNumber INT NOT NULL,
+                           PaymentAmount INT,
+                           PaymentMethod VARCHAR(255),
+                           CreditCardNumber INT,
+                           FOREIGN KEY(CreditCardNumber) REFERENCES CreditCard(CreditCardNumber)
+);
+
+DROP TABLE IF EXISTS PickupMethod;
+CREATE TABLE PickupMethod (Method VARCHAR(255) PRIMARY KEY);
+
+INSERT INTO PickupMethod(Method) VALUES ('Drive-thru');
+INSERT INTO PickupMethod(Method) VALUES ('Delivery');
+INSERT INTO PickupMethod(Method) VALUES ('Walk in');
+INSERT INTO PickupMethod(Method) VALUES ('Dine in');
+
+DROP TABLE IF EXISTS Orders;
+CREATE TABLE Orders (OrderNumber INT PRIMARY KEY,
+                     StoreNumber INT,
+                     CustomerID INT,
+                     PickupMethod VARCHAR(255),
+                     OrderTime TIMESTAMP,
+                     Fulfilled INT DEFAULT 0,
+                     FOREIGN KEY(StoreNumber) REFERENCES StoreLocation(StoreNumber),
+                     FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID),
+                     FOREIGN KEY(PickupMethod) REFERENCES PickupMethod(Method)
+);
+
 DROP TABLE IF EXISTS DeliveryAddress;
 CREATE TABLE DeliveryAddress (OrderNumber INT PRIMARY KEY,
                               StreetAddress VARCHAR(255),
@@ -38,45 +77,33 @@ CREATE TABLE DeliveryAddress (OrderNumber INT PRIMARY KEY,
                               Country VARCHAR(255)
 );
 
--- 6
-DROP TABLE IF EXISTS Orders;
-CREATE TABLE Orders (OrderNumber INT PRIMARY KEY,
-                     StoreNumber INT,
-                     CustomerID INT,
-                     PickupMethod VARCHAR(255),
-                     OrderTime TIMESTAMP,
-                     Fulfilled INT DEFAULT 0
-);
-
 -- 7
 DROP TABLE IF EXISTS Items;
 CREATE TABLE Items (ItemNumber INT PRIMARY KEY,
-                    Name VARCHAR(255),
+                    ItemName VARCHAR(255),
                     Price DECIMAL(10, 2),
-                    Modifications VARCHAR(255),
-                    BreakfastItem INT DEFAULT 0
+                    StockQuantity INT
 );
 
+DROP TABLE IF EXISTS BreakfastItems;
+CREATE TABLE BreakfastItems (ItemNumber INT PRIMARY KEY);
+
 DROP TABLE IF EXISTS OrderItems;
-CREATE TABLE OrderItems (OrderNumber NOT NULL INT,
-                         ItemNumber NOT NULL INT,
-                         OrderQuantity INT DEFAULT 1
+CREATE TABLE OrderItems (OrderNumber INT NOT NULL,
+                         ItemNumber INT NOT NULL,
+                         Modifications VARCHAR(255),
+                         OrderQuantity INT DEFAULT 1,
+                         FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
 DROP TABLE IF EXISTS Combos;
 CREATE TABLE Combos (ItemNumber INT PRIMARY KEY,
-                     EntreeItemNumber NOT NULL INT,
-                     SideItemNumber NOT NULL INT,
-                     DrinkItemNumber NOT NULL INT,
-                     FOREIGN KEY(EntreeItemNumber) REFERENCES Items(EntreeItemNumber),
-                     FOREIGN KEY(SideItemNumber) REFERENCES Items(SideItemNumber),
-                     FOREIGN KEY(DrinkItemNumber) REFERENCES Items(DrinkItemNumber)
-);
-
--- 7.2
-DROP TABLE IF EXISTS ItemStock;
-CREATE TABLE ItemStock (ItemNumber INT PRIMARY KEY,
-                        StockQuantity INT
+                     EntreeItemNumber INT,
+                     SideItemNumber INT,
+                     DrinkItemNumber INT,
+                     FOREIGN KEY(EntreeItemNumber) REFERENCES Items(ItemNumber),
+                     FOREIGN KEY(SideItemNumber) REFERENCES Items(ItemNumber),
+                     FOREIGN KEY(DrinkItemNumber) REFERENCES Items(ItemNumber)
 );
 
 -- 8
@@ -91,24 +118,7 @@ CREATE TABLE Drinks (ItemNumber INT PRIMARY KEY,
                      Size VARCHAR(255),
                      HotDrink INT DEFAULT 0
 );
-
--- 14
-DROP TABLE IF EXISTS OrderPayment;
-CREATE TABLE OrderPayment (OrderNumber NOT NULL INT,
-                           PaymentAmount INT,
-                           PaymentMethod VARCHAR(255),
-                           CreditCardNumber INT
-);
-
 -- 15
-DROP TABLE IF EXISTS CreditCard;
-CREATE TABLE CreditCard (CreditCardNumber INT PRIMARY KEY,
-                         FirstName NOT NULL VARCHAR(255),
-                         LastName NOT NULL VARCHAR(255),
-                         ExpirationMonth NOT NULL INT,
-                         ExpirationYear NOT NULL INT,
-                         SecurityCode NOT NULL INT
-);
 
 -- 16
 DROP TABLE IF EXISTS ItemNutrition;
@@ -118,12 +128,12 @@ CREATE TABLE ItemNutrition (ItemNumber INT PRIMARY KEY,
                             Vegan INT DEFAULT 0
 );
 
+DROP TABLE IF EXISTS RewardItems;
+CREATE TABLE RewardItems (ItemNumber INT PRIMARY KEY,
+                          PointCost INT
+);
+
 -- 17
-DROP TABLE IF EXISTS PickupMethod;
-CREATE TABLE PickupMethod (OrderNumber INT PRIMARY KEY,
-                           Method VARCHAR(255),
-                           PickupTime TIMESTAMP
-); 
 
 --- Example code below
 /*
