@@ -12,6 +12,12 @@ CREATE TABLE Address (AddressID SERIAL PRIMARY KEY,
                       Country VARCHAR(255)
 );
 
+INSERT INTO 
+    Address(StreetAddress, City, ZIP, State, Country)
+VALUES
+
+;
+
 -- 5
 DROP TABLE IF EXISTS StoreBranch;
 CREATE TABLE StoreBranch (StoreNumber SERIAL PRIMARY KEY,
@@ -20,12 +26,24 @@ CREATE TABLE StoreBranch (StoreNumber SERIAL PRIMARY KEY,
                           FOREIGN KEY(AddressID) REFERENCES Address(AddressID)
 );
 
+INSERT INTO 
+    StoreBranch(AddressID, Manager)
+VALUES
+
+;
+
 -- 1
 DROP TABLE IF EXISTS Customers;
 CREATE TABLE Customers (CustomerID SERIAL PRIMARY KEY,
                         Name VARCHAR(255) NOT NULL,
                         RewardsPoints INT DEFAULT 0
 );
+
+INSERT INTO 
+    StoreBranch(Name)
+VALUES
+
+;
 
 -- 2
 DROP TABLE IF EXISTS CustomerAddress;
@@ -34,6 +52,12 @@ CREATE TABLE CustomerAddress (CustomerID BIGINT UNSIGNED NOT NULL,
                               FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID),
                               FOREIGN KEY(AddressID) REFERENCES Address(AddressID)
 );
+
+INSERT INTO 
+    CustomerAddress(CustomerID, AddressID)
+VALUES
+
+;
 
 DROP TABLE IF EXISTS PaymentMethod;
 CREATE TABLE PaymentMethod (Method VARCHAR(255) PRIMARY KEY);
@@ -72,6 +96,12 @@ CREATE TABLE Orders (OrderNumber SERIAL PRIMARY KEY,
                      FOREIGN KEY(PickupMethod) REFERENCES PickupMethod(Method),
                      FOREIGN KEY(PaymentMethod) REFERENCES PaymentMethod(Method)
 );
+
+INSERT INTO 
+    Orders(StoreNumber, CustomerID, PickupMethod, PaymentMethod)
+VALUES
+
+;
 
 -- 8
 DROP TABLE IF EXISTS Items;
@@ -205,6 +235,17 @@ CREATE TABLE Combos (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                      FOREIGN KEY(DrinkItemNumber) REFERENCES DrinkItems(ItemNumber)
 );
 
+INSERT INTO 
+    Combos(ItemNumber, EntreeItemNumber, SideItemNumber, DrinkItemNumber)
+VALUES
+    (
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger Combo'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Small Fries'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink'),
+    )
+;
+
 DROP TABLE IF EXISTS OrderItems;
 CREATE TABLE OrderItems (OrderNumber BIGINT UNSIGNED NOT NULL,
                          ItemNumber BIGINT UNSIGNED NOT NULL,
@@ -214,6 +255,12 @@ CREATE TABLE OrderItems (OrderNumber BIGINT UNSIGNED NOT NULL,
                          FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
+INSERT INTO 
+    OrderItems(OrderNumber, ItemNumber, Quantity, Modifications)
+VALUES
+
+;
+
 -- 17
 DROP TABLE IF EXISTS ItemNutrition;
 CREATE TABLE ItemNutrition (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
@@ -222,8 +269,20 @@ CREATE TABLE ItemNutrition (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                             Vegan INT DEFAULT 0
 );
 
+INSERT INTO 
+    ItemNutrition(ItemNumber, Calories, Vegetarian, Vegan)
+VALUES
+
+;
+
 -- 16
 DROP TABLE IF EXISTS RewardItems;
 CREATE TABLE RewardItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                           PointCost INT
 );
+
+INSERT INTO 
+    RewardItems(ItemNumber, PointCost)
+VALUES
+
+;
