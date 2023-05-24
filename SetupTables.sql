@@ -15,7 +15,7 @@ CREATE TABLE Address (AddressID SERIAL PRIMARY KEY,
 -- 5
 DROP TABLE IF EXISTS StoreBranch;
 CREATE TABLE StoreBranch (StoreNumber SERIAL PRIMARY KEY,
-                          AddressID BIGINT UNSIGNED,
+                          AddressID BIGINT UNSIGNED NOT NULL,
                           Manager VARCHAR(255),
                           FOREIGN KEY(AddressID) REFERENCES Address(AddressID)
 );
@@ -23,7 +23,7 @@ CREATE TABLE StoreBranch (StoreNumber SERIAL PRIMARY KEY,
 -- 1
 DROP TABLE IF EXISTS Customers;
 CREATE TABLE Customers (CustomerID SERIAL PRIMARY KEY,
-                        Name VARCHAR(255),
+                        Name VARCHAR(255) NOT NULL,
                         RewardsPoints INT DEFAULT 0
 );
 
@@ -62,11 +62,11 @@ VALUES
 -- 6
 DROP TABLE IF EXISTS Orders;
 CREATE TABLE Orders (OrderNumber SERIAL PRIMARY KEY,
-                     StoreNumber BIGINT UNSIGNED,
-                     CustomerID BIGINT UNSIGNED,
-                     PickupMethod VARCHAR(255),
-                     PaymentMethod VARCHAR(255),
-                     OrderTime TIMESTAMP,
+                     StoreNumber BIGINT UNSIGNED NOT NULL,
+                     CustomerID BIGINT UNSIGNED NOT NULL,
+                     PickupMethod VARCHAR(255) NOT NULL,
+                     PaymentMethod VARCHAR(255) NOT NULL,
+                     OrderTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                      FOREIGN KEY(StoreNumber) REFERENCES StoreBranch(StoreNumber),
                      FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID),
                      FOREIGN KEY(PickupMethod) REFERENCES PickupMethod(Method),
