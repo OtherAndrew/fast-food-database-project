@@ -154,9 +154,22 @@ VALUES
     ((SELECT ItemNumber FROM Items WHERE ItemName = 'Large Drink'))
 ;
 
+DROP TABLE IF EXISTS Seasons;
+CREATE TABLE Seasons(Season VARCHAR(255) PRIMARY KEY);
+
+INSERT INTO 
+    Seasons(Season)
+VALUES 
+    ('Winter'),
+    ('Spring'),
+    ('Summer'),
+    ('Fall')
+;
+
 DROP TABLE IF EXISTS LimitedItems;
 CREATE TABLE LimitedItems (ItemNumber BIGINT UNSIGNED PRIMARY KEY,
                            Season VARCHAR(255),
+                           FOREIGN KEY(Season) REFERENCES Seasons(Season),
                            FOREIGN KEY(ItemNumber) REFERENCES Items(ItemNumber)
 );
 
