@@ -119,7 +119,24 @@ CREATE TABLE Orders (OrderNumber SERIAL PRIMARY KEY,
 INSERT INTO 
     Orders(StoreNumber, CustomerID, PickupMethod, PaymentMethod)
 VALUES
-
+	((SELECT StoreNumber FROM StoreBranch WHERE Manager = 'Doctor Han'), 
+		(SELECT CustomerID FROM Customers WHERE Name = 'Raymoo Hakuray'),
+		'Walk in', 'Cash'),
+	((SELECT StoreNumber FROM StoreBranch WHERE Manager = 'Doctor Han'), 
+		(SELECT CustomerID FROM Customers WHERE Name = 'David Hayter'),
+		'Drive-thru', 'Credit card'),
+	((SELECT StoreNumber FROM StoreBranch WHERE Manager = 'Doctor Han'), 
+		(SELECT CustomerID FROM Customers WHERE Name = 'Raymoo Hakuray'),
+		'Delivery', 'Rewards'),
+	((SELECT StoreNumber FROM StoreBranch WHERE Manager = 'Satori Komeiji'), 
+		(SELECT CustomerID FROM Customers WHERE Name = 'Chen'),
+		'Dine in', 'Gift card'),
+	((SELECT StoreNumber FROM StoreBranch WHERE Manager = 'Walter White'), 
+		(SELECT CustomerID FROM Customers WHERE Name = 'Chen'),
+		'Dine in', 'Cash'),
+	((SELECT StoreNumber FROM StoreBranch WHERE Manager = 'Satori Komeiji'), 
+		(SELECT CustomerID FROM Customers WHERE Name = 'Gordan Freeman'),
+		'Walk in', 'Credit card')
 ;
 
 -- 8
