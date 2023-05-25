@@ -279,6 +279,36 @@ VALUES
         (SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger'),
         (SELECT ItemNumber FROM Items WHERE ItemName = 'Small Fries'),
         (SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink')
+    ),
+	(
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger Combo'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Small Fries'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink')
+    ),
+	    (
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Double Hamburger Combo'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Double Hamburger'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Small Fries'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink')
+    ),
+	    (
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Double Cheeseburger Combo'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Double Cheeseburger'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Small Fries'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink')
+    ),
+	    (
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Combo'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Sandwich'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Hashbrowns'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Small Drink')
+    ),
+	    (
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Bacon Breakfast Combo'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Bacon Breakfast Sandwich'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Hashbrowns'),
+        (SELECT ItemNumber FROM Items WHERE ItemName = 'Small Drink')
     )
 ;
 
@@ -294,6 +324,27 @@ CREATE TABLE OrderItems (OrderNumber BIGINT NOT NULL,
 INSERT INTO 
     OrderItems(OrderNumber, ItemNumber, Quantity, Modifications)
 VALUES
+	(1, 
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Hash Browns'), 2, NULL),
+	(1,
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Sandwich'), 2, NULL),
+
+	(2, 
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Double Cheeseburger Combo'), 1, 'No pickles'),
+
+	(3, 
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Large Fries'), 1, NULL),
+
+	(4, 
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger Combo'), 1, NULL),
+
+	(5, 
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger Combo'), 1, 'No lettuce or pickles'),
+
+	(6, 
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger'), 3, NULL),
+	(6, 
+	(SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink'), 3, 'No ice')
 
 ;
 
@@ -308,7 +359,28 @@ CREATE TABLE ItemNutrition (ItemNumber BIGINT PRIMARY KEY,
 INSERT INTO 
     ItemNutrition(ItemNumber, Calories, Vegetarian, Vegan)
 VALUES
-
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger'), 600, 0, 0),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger'), 620, 0, 0),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Hamburger'), 800, 0, 0),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Cheeseburger'), 820, 0, 0),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Sandwich'), 500, 0, 0),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Bacon Breakfast Sandwich'), 530, 0,0),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Halloween Burger'), 666, 0, 0),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Christmas Burger'), 700, 0, 0),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Small Fries'), 150, 1, 1),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Large Fries'), 200, 1, 1),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Onion Rings'), 300, 1, 1),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Pickle Chips'), 300, 1, 1),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Hash Browns'), 200, 1, 1),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Small Drink'), 200, 1, 1),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Medium Drink'), 250, 1, 1),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Large Drink'), 300, 1, 1),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger Combo'), 1000, 0,0),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger Combo'), 1020, 0,0),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Hamburger Combo'), 1200, 0, 0),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Cheeseburger Combo'), 1220, 0, 0),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Combo'), 900, 0, 0),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Bacon Breakfast Combo'), 930, 0, 0)
 ;
 
 -- 16
@@ -320,5 +392,15 @@ CREATE TABLE RewardItems (ItemNumber BIGINT PRIMARY KEY,
 INSERT INTO 
     RewardItems(ItemNumber, PointCost)
 VALUES
-
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Hamburger'), 800),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Cheeseburger'), 900),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Hamburger'), 1000),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Double Cheeseburger'), 1100),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Large Fries'), 300),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Large Drink'), 400),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Onion Rings'), 500),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Pickle Chips'), 500),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Hash Browns'), 500),
+	((SELECT ItemNumber FROM Items WHERE ItemName = 'Sausage Breakfast Sandwich'), 800),
+    ((SELECT ItemNumber FROM Items WHERE ItemName = 'Bacon Breakfast Sandwich'), 800)
 ;
