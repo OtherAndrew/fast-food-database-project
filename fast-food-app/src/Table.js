@@ -3,7 +3,22 @@ import JsonData from './menu.json'
  
 //From:https://www.geeksforgeeks.org/how-to-parse-json-data-into-react-table-component/
 
+function getMenu() {
+    // try {
+    //     const response = fetch('localhost:5000/menu');
+    //     return response.json();
+    // } catch(error) {
+    //     console.log(error)
+    // }
+    fetch('http://localhost:5000/menu')
+        .then(result => result.json())
+        .then(json => {
+            console.log(json)
+        })
+}
+
 export default function Table(){
+    getMenu();
     const DisplayData=JsonData.items.map(
         (info)=>{
             return(
