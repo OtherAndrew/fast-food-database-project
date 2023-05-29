@@ -1,0 +1,28 @@
+.App {
+  text-align: center;
+}
+.wrapper {
+  padding:20px;
+  background-color: #1b1e24;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.banner{
+  text-align: center;
+}
+.orders{
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  justify-content: center;
+}
+.wrapper fieldset {
+  margin: 20px 0;
+}
+.App-logo {
+  height: 10vmin;
+  pointer-events: none;
+}
+
