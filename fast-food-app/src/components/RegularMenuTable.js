@@ -1,10 +1,9 @@
 export default function RegularMenuTable(props) {
   return (
     <div className="table">
-      {props.loading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
+      {props.loading
+        ? (<div>Loading...</div>)
+        : (
           <table border={1}>
             <tbody>
               <tr>
@@ -24,8 +23,8 @@ export default function RegularMenuTable(props) {
               )}
             </tbody>
           </table>
-        </>
-      )}
+        )
+      }
     </div>
   );
 }
