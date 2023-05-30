@@ -3,6 +3,7 @@ import {useReducer, useState, useEffect, React} from 'react'
 import './App.css';
 import Table from './Table';
 import menuData from './menu.json';
+import RegularMenuTable from "./components/RegularMenuTable";
 //Help from tutorials: https://www.digitalocean.com/community/tutorials/how-to-build-forms-in-react
 
 
@@ -94,7 +95,6 @@ function App() {
         setLoading(false)
       })
   }, [])
-  console.log(menu)
   return(
     <div className = "wrapper">
       <header className='banner'> 
@@ -112,32 +112,10 @@ function App() {
                   {/*<option value='combos'>Combos</option>*/}
                   <option value='vegetarian'>Vegetarian</option>
           </select>
-            <div className="table">
-            {loading ? (
-              <div>Loading...</div>
-            ) : (
-              <>
-                <table border={1}>
-                  <tr>
-                    <th>Item #</th>
-                    <th>Item</th>
-                    <th>Price</th>
-                  </tr>
-                      {menu.items?.map (item => {
-                        return (
-                          <tr>
-                          <td>{item.ItemNumber}</td>
-                          <td>{item.ItemName}</td>
-                          <td>{item.Price}</td>
-                          </tr>
-                        )
-                      }
-                      )}
-
-                </table>
-              </>
-            )}
-          </div>
+          <RegularMenuTable
+            loading={loading}
+            menu={menu}
+            />
         </div>
         <div>
           <form onSubmit={handleItemSubmit}>
