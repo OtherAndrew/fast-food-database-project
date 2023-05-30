@@ -108,9 +108,9 @@ function App() {
                   <option value="">All</option>
                   <option value='entrees'>Entrees</option>
                   <option value='sides'>Sides</option>
-                  <option value='Drinks'>Drinks</option>
-                  <option value='Combos'>Combos</option>
-                  <option value='Vegetarian'>Vegetarian</option>
+                  <option value='drinks'>Drinks</option>
+                  {/*<option value='combos'>Combos</option>*/}
+                  <option value='vegetarian'>Vegetarian</option>
           </select>
             <div className="table">
             {loading ? (
