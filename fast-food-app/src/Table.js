@@ -10,30 +10,29 @@ async function getMenu() {
     // } catch(error) {
     //     console.log(error)
     // }
-    await fetch('http://localhost:5000/menu', {
+    return await fetch('http://localhost:5000/menu', {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
-    }).then(result => result.json())
-    .then(data => {
-        console.log(data);
     })
+    .then(result => result.json())
     .catch(error => console.log(error.message));
 }
 
 export default function Table(){
-    getMenu();
-    const DisplayData=JsonData.items.map(
-        (info)=>{
-            return(
-                <tr>
-                    <td>{info.ItemNumber}</td>
-                    <td>{info.ItemName}</td>
-                    <td>{'$'+info.Price}</td>
-                </tr>
-            )
-        }
-    )
-    return(
+    let DisplayData
+    getMenu().then(result => {
+        DisplayData=result.items.map(
+            (info)=>{
+                return(
+                    <tr>
+                        <td>{info.ItemNumber}</td>
+                        <td>{info.ItemName}</td>
+                        <td>{'$'+info.Price}</td>
+                    </tr>
+                )
+            }
+        )
+         return(
         <div>
             
             <table class="table table-striped">
@@ -53,4 +52,5 @@ export default function Table(){
              
         </div>
     )
+    })
  }

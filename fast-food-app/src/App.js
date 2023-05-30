@@ -1,5 +1,5 @@
 import banner from './Banner.png'
-import {useReducer, useState, React} from 'react'
+import {useReducer, useState, useEffect, React} from 'react'
 import './App.css';
 import Table from './Table';
 import menuData from './menu.json';
@@ -22,10 +22,16 @@ const formReducer = (state, event) => {
   }
 }
 
+
 function App() {
   const [itemData, setItemData] = useReducer(formReducer, {});
   const [orderData, setOrderData] = useReducer(formReducer, {});
   const [orderItem, setOrderItem] = useState([]);
+
+  const [filter, setFilter] = useState('');
+
+  const [menu, setMenu] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -59,6 +65,27 @@ function App() {
       value:event.target.value,
     });
   }
+  const handleFilterChange = event => {
+    console.log(event.target.value)
+    setFilter({
+      filter: event.target.value,
+    });
+    
+  }
+
+  useEffect(() => {
+    setLoading(true)
+    fetch('http://localhost:5000/menu/' + filter, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+    })
+      .then(response => response.json())
+      .then(response => setMenu(response))
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [])
+  console.log(menu)
   return(
     <div className = "wrapper">
       <header className='banner'> 
@@ -68,15 +95,40 @@ function App() {
       <header className='orders'>
         <div>
           <h1>Menu</h1>
-          <select name="name">
+          <select name="name" onChange={handleFilterChange}>
                   <option value="">All</option>
-                  <option value='Entrees'>Entrees</option>
-                  <option value='Sides'>Sides</option>
+                  <option value='entrees'>Entrees</option>
+                  <option value='sides'>Sides</option>
                   <option value='Drinks'>Drinks</option>
                   <option value='Combos'>Combos</option>
                   <option value='Vegetarian'>Vegetarian</option>
           </select>
-          <Table/>
+            <div className="table">
+            {loading ? (
+              <div>Loading...</div>
+            ) : (
+              <>
+                <table border={1}>
+                  <tr>
+                    <th>Item #</th>
+                    <th>Item</th>
+                    <th>Price</th>
+                  </tr>
+                      {menu.items?.map (item => {
+                        return (
+                          <tr>
+                          <td>{item.ItemNumber}</td>
+                          <td>{item.ItemName}</td>
+                          <td>{item.Price}</td>
+                          </tr>
+                        )
+                      }
+                      )}
+
+                </table>
+              </>
+            )}
+          </div>
         </div>
         <div>
           <form onSubmit={handleItemSubmit}>
