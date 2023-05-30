@@ -66,12 +66,21 @@ function App() {
     });
   }
   const handleFilterChange = event => {
-    console.log(event.target.value)
-    setFilter({
-      filter: event.target.value,
-    });
-    
+    // console.log(event.target.value)
+    // setFilter({
+    //   filter: event.target.value,
+    // });
+    fetch('http://localhost:5000/menu/' + event.target.value, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+    })
+        .then(response => response.json())
+        .then(response => setMenu(response))
+        .finally(() => {
+          setLoading(false)
+        })
   }
+
 
   useEffect(() => {
     setLoading(true)
