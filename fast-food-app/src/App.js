@@ -1,8 +1,6 @@
 import banner from './Banner.png'
 import {useReducer, useState, useEffect, React} from 'react'
 import './App.css';
-import Table from './Table';
-import menuData from './menu.json';
 //Help from tutorials: https://www.digitalocean.com/community/tutorials/how-to-build-forms-in-react
 
 
@@ -66,10 +64,6 @@ function App() {
     });
   }
   const handleFilterChange = event => {
-    // console.log(event.target.value)
-    // setFilter({
-    //   filter: event.target.value,
-    // });
     fetch('http://localhost:5000/menu/' + event.target.value, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -80,7 +74,6 @@ function App() {
           setLoading(false)
         })
   }
-
 
   useEffect(() => {
     setLoading(true)
@@ -94,7 +87,7 @@ function App() {
         setLoading(false)
       })
   }, [])
-  console.log(menu)
+
   return(
     <div className = "wrapper">
       <header className='banner'> 
@@ -109,7 +102,6 @@ function App() {
                   <option value='entrees'>Entrees</option>
                   <option value='sides'>Sides</option>
                   <option value='drinks'>Drinks</option>
-                  {/*<option value='combos'>Combos</option>*/}
                   <option value='vegetarian'>Vegetarian</option>
           </select>
             <div className="table">
@@ -133,7 +125,6 @@ function App() {
                         )
                       }
                       )}
-
                 </table>
               </>
             )}
@@ -150,6 +141,12 @@ function App() {
                   <option value='Hakurei Reimu'>Hakurei Reimu</option>
                   <option value='Kochiya Sanae'>Kochiya Sanae</option>
                 </select>
+                <p>Select Customer Address</p>
+                <select name="name" onChange={handleOrderChange} disabled={!orderData.name}>
+                  <option value="">--Please choose an option--</option>
+                  <option value='Hakurei Reimu'>Hakurei Reimu</option>
+                  <option value='Kochiya Sanae'>Kochiya Sanae</option>
+                </select>
                 <p>Select Store</p>
                 <select name="store" onChange={handleOrderChange}>
                   <option value="">--Please choose an option--</option>
@@ -157,6 +154,15 @@ function App() {
                   <option value='Yosuzume Izakaya'>Yosuzume Izakaya</option>
                 </select>
                 <p>Select Payment Type</p>
+                <select name="payment" onChange={handleOrderChange}>
+                  <option value="">--Please choose an option--</option>
+                  <option value="creditcard">Credit Card</option>
+                  <option value="cash">Cash</option>
+                  <option value="rewards">Rewards</option>
+                  <option value="giftcard">Gift Card</option>
+                  
+                </select>
+                <p>Select Pickup Method</p>
                 <select name="payment" onChange={handleOrderChange}>
                   <option value="">--Please choose an option--</option>
                   <option value="creditcard">Credit Card</option>
@@ -178,7 +184,7 @@ function App() {
             <select name="item" onChange={handleItemChange} value={itemData.item || ''}>
 
               <option value="">--Please choose an option--</option>
-              {menuData.items.map((option) => (
+              {menu.items?.map((option) => (
               <option value={option.itenName}>{option.ItemName}</option>
               ))}
               
