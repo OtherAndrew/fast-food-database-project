@@ -3,7 +3,7 @@ import {useReducer, useState, useEffect, React} from 'react'
 import './App.css';
 import Table from './Table';
 import menuData from './menu.json';
-import RegularMenuTable from "./components/RegularMenuTable";
+import MenuTable from "./components/MenuTable";
 //Help from tutorials: https://www.digitalocean.com/community/tutorials/how-to-build-forms-in-react
 
 
@@ -141,12 +141,13 @@ function App() {
           <h1>Menu</h1>
           <select name="name" onChange={handleFilterChange}>
                   <option value="">All</option>
+                  <option value='combos'>Combos</option>
                   <option value='entrees'>Entrees</option>
                   <option value='sides'>Sides</option>
                   <option value='drinks'>Drinks</option>
                   <option value='vegetarian'>Vegetarian</option>
           </select>
-          <RegularMenuTable
+          <MenuTable
             loading={loading}
             menu={menu}
             />
