@@ -1,8 +1,6 @@
 import banner from './Banner.png'
 import {useReducer, useState, useEffect, React} from 'react'
 import './App.css';
-import Table from './Table';
-import menuData from './menu.json';
 import MenuTable from "./components/MenuTable";
 import SelectBox from "./components/SelectBox";
 import OrderTable from "./components/OrderTable";
@@ -40,10 +38,13 @@ function App() {
   const [itemEntry, setItemEntry] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const [submitting, setSubmitting] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [customerComplete, setCustomerComplete] = useState(false);
 
-
+  const handleCustomerSubmit = event => {
+    event.preventDefault();
+    setCustomerComplete(true);
+  }
   const handleItemSubmit = event => {
     event.preventDefault();
     setOrderItem([
@@ -59,12 +60,16 @@ function App() {
         pickup: orderData.pickup
       }
     ]);
-    setItemData({
-      reset: true
-    })
+    setItemData({reset: true})
   }
   const handleShowHistory = event => {
     showHistory?setShowHistory(false):setShowHistory(true)
+  }
+  const handleNewCustomer = event => {
+    setCustomerComplete(false)
+    setOrderData({reset: true})
+    setItemData({reset: true})
+    setOrderItem([])
   }
   const handleOrderChange = event => {
     setOrderData({
@@ -171,27 +176,27 @@ function App() {
             />
         </div>
         <div>
-          <form onSubmit={handleItemSubmit}>
+          <form onSubmit={handleCustomerSubmit}>
             <h2>Order Information:</h2>
-            <fieldset> 
+            <fieldset disabled={customerComplete}> 
               <label> 
                 <p>Select Customer</p>
-                <SelectBox handle={handleCustomerChange} name='customerID'
+                <SelectBox handle={handleCustomerChange} name='customerID' value={orderData.customerID || ''}
                   options = {customers.customers?.map((option) => (
                     <option value={option.CustomerID}>{option.Name}</option>
                    ))}/>
                 <p>Select Customer Address</p>
-                <SelectBox handle={handleOrderChange} name='address' disabled = {!orderData.customerID}
+                <SelectBox handle={handleOrderChange} name='address' disabled = {!orderData.customerID} value={orderData.address || ''}
                   options = {addresses.addresses?.map((option) => (
                     <option value={option.StreetAddress}>{option.StreetAddress + ' ' + option.City}</option>
                    ))}/>
                 <p>Select Store</p>
-                <SelectBox handle={handleOrderChange} name='store'
+                <SelectBox handle={handleOrderChange} name='store' value={orderData.store || ''}
                   options = {stores.stores?.map((option) => (
                     <option value={option.StoreNumber}>{option.StreetAddress + ' ' + option.City}</option>
                    ))}/>
                 <p>Select Payment Type</p>
-                <select name="payment" onChange={handleOrderChange}>
+                <select name="payment" onChange={handleOrderChange} value={orderData.payment || ''}>
                   <option value="">--Please choose an option--</option>
                   <option value="creditcard">Credit Card</option>
                   <option value="cash">Cash</option>
@@ -199,7 +204,7 @@ function App() {
                   <option value="giftcard">Gift Card</option>
                 </select>
                 <p>Select Pickup Method</p>
-                <select name="pickup" onChange={handleOrderChange}>
+                <select name="pickup" onChange={handleOrderChange} value={orderData.pickup || ''}>
                   <option value="">--Please choose an option--</option>
                   <option value="Dine in">Dine-in</option>
                   <option value="Drive-thru">Drive-thru</option>
@@ -208,11 +213,19 @@ function App() {
                 </select>
               </label>
             </fieldset>
+            {customerComplete ? 
+            (<button onClick={handleNewCustomer}>New Order</button>) 
+            : 
+            (<button type='submit' 
+              disabled={!orderData.address||!orderData.store||!orderData.payment||!orderData.pickup}>
+              Start Order
+            </button>
+            )}
           </form>
         </div>
         <form onSubmit={handleItemSubmit}>
           <h2>Please select items</h2>
-          <fieldset disabled={submitting}>
+          <fieldset disabled = {!customerComplete}>
             <h3>Add an item:</h3>
           <label>
             <p>Item</p>
@@ -241,23 +254,16 @@ function App() {
           </label>
         </fieldset>
           <button type = 'submit' 
-            disabled={submitting||!itemData.item||!itemData.count||!orderData.customerID||!orderData.store
+            disabled={!itemData.item||!itemData.count||!orderData.customerID||!orderData.store
             ||!orderData.payment||!orderData.pickup||!orderData.address}>
             Add to order</button>
         </form>
         {<div>
-          <h1>Customer Info:</h1>
-          <ul>
-            {Object.entries(orderData).map(([name, value]) => (
-              <li key={name}><strong>{name}</strong>: {value.toString()}</li>
-            ))}
-          </ul>
           <h1>Current Order:</h1>
           <ul>
-            {orderItem.map(orderItem => (
+            {orderItem &&orderItem.map(orderItem => (
               <li>{orderData.CustomerID}{orderItem.item}(<strong>{orderItem.count}</strong>)</li>
             ))}
-            <li>OrderTotal: </li>
           </ul>
           <></>
         </div>}
