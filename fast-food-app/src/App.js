@@ -213,12 +213,12 @@ function App() {
                 <p>Select Customer Address</p>
                 <SelectBox handle={handleOrderChange} name='address' disabled = {!orderData.customerID} value={orderData.address || ''}
                   options = {addresses.addresses?.map((option) => (
-                    <option value={option.StreetAddress}>{option.StreetAddress + ' ' + option.City}</option>
+                    <option value={option.StreetAddress}>{`${option.StreetAddress} ${option.City} ${option.ZIP}`}</option>
                    ))}/>
                 <p>Select Store</p>
                 <SelectBox handle={handleOrderChange} name='store' value={orderData.store || ''}
                   options = {stores.stores?.map((option) => (
-                    <option value={option.StoreNumber}>{option.StreetAddress + ' ' + option.City}</option>
+                    <option value={option.StoreNumber}>{`${option.StreetAddress} ${option.City} ${option.ZIP}`}</option>
                    ))}/>
                 <p>Select Payment Type</p>
                 <select name="payment" onChange={handleOrderChange} value={orderData.payment || ''}>
