@@ -16,6 +16,7 @@ export default function MenuTable(props) {
                 <th>Entree</th>
                 <th>Side</th>
                 <th>Drink</th>
+                <th>Calories</th>
                 <th>Price</th>
               </tr>
               {props.menu.combos?.map(item => {
@@ -26,6 +27,7 @@ export default function MenuTable(props) {
                       <td>{item.Entree}</td>
                       <td>{item.Side}</td>
                       <td>{item.Drink}</td>
+                      <td>{item.Calories}</td>
                       <td>{item.Price}</td>
                     </tr>
                   );
