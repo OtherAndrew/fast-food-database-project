@@ -4,6 +4,8 @@ import './App.css';
 import Table from './Table';
 import menuData from './menu.json';
 import MenuTable from "./components/MenuTable";
+import SelectBox from "./components/SelectBox";
+
 //Help from tutorials: https://www.digitalocean.com/community/tutorials/how-to-build-forms-in-react
 
 
@@ -140,12 +142,12 @@ function App() {
         <div>
           <h1>Menu</h1>
           <select name="name" onChange={handleFilterChange}>
-                  <option value="">All</option>
-                  <option value='combos'>Combos</option>
-                  <option value='entrees'>Entrees</option>
-                  <option value='sides'>Sides</option>
-                  <option value='drinks'>Drinks</option>
-                  <option value='vegetarian'>Vegetarian</option>
+            <option value="">All</option>
+            <option value='combos'>Combos</option>
+            <option value='entrees'>Entrees</option>
+            <option value='sides'>Sides</option>
+            <option value='drinks'>Drinks</option>
+            <option value='vegetarian'>Vegetarian</option>
           </select>
           <MenuTable
             loading={loading}
@@ -158,26 +160,20 @@ function App() {
             <fieldset> 
               <label> 
                 <p>Select Customer</p>
-                <select name="customerID" onChange= {handleCustomerChange}>
-                  <option value="">--Please choose an option--</option>
-                  {customers.customers?.map((option) => (
-                   <option value={option.CustomerID}>{option.Name}</option>
-                  ))}
-                </select>
+                <SelectBox handle={handleCustomerChange} name='customerID'
+                  options = {customers.customers?.map((option) => (
+                    <option value={option.CustomerID}>{option.Name}</option>
+                   ))}/>
                 <p>Select Customer Address</p>
-                <select name="address" onChange={handleOrderChange} disabled={!orderData.customerID}>
-                  <option value="">--Please choose an option--</option>
-                  {addresses.addresses?.map((option) => (
-                   <option value={option.StreetAddress}>{option.StreetAddress + ' ' + option.City}</option>
-                  ))}
-                </select>
+                <SelectBox handle={handleOrderChange} name='address' disabled = {!orderData.customerID}
+                  options = {addresses.addresses?.map((option) => (
+                    <option value={option.StreetAddress}>{option.StreetAddress + ' ' + option.City}</option>
+                   ))}/>
                 <p>Select Store</p>
-                <select name="store" onChange={handleOrderChange}>
-                  <option value="">--Please choose an option--</option>
-                  {stores.stores?.map((option) => (
-                   <option value={option.StoreNumber}>{option.StreetAddress + ' ' + option.City}</option>
-                  ))}
-                </select>
+                <SelectBox handle={handleOrderChange} name='store'
+                  options = {stores.stores?.map((option) => (
+                    <option value={option.StoreNumber}>{option.StreetAddress + ' ' + option.City}</option>
+                   ))}/>
                 <p>Select Payment Type</p>
                 <select name="payment" onChange={handleOrderChange}>
                   <option value="">--Please choose an option--</option>
@@ -193,7 +189,6 @@ function App() {
                   <option value="Drive-thru">Drive-thru</option>
                   <option value="Walk in">Walk in</option>
                   <option value="Delivery">Delivery</option>
-                  
                 </select>
               </label>
             </fieldset>
@@ -205,14 +200,19 @@ function App() {
             <h3>Add an item:</h3>
           <label>
             <p>Item</p>
-            <select name="item" onChange={handleItemChange} value={itemData.item || ''}>
-
-              <option value="">--Please choose an option--</option>
-              {menu.items?.map((option) => (
-              <option value={option.itenName}>{option.ItemName}</option>
-              ))}
-              
-            </select>
+            <SelectBox handle={handleItemChange} name='item' value={itemData.item || ''}
+              options = {
+                menu.combos 
+                ? (
+                  menu.combos?.map((option) => (
+                    <option value={option.ComboName}>{option.ComboName}</option>
+                  ))
+                ) 
+                : (
+                  menu.items?.map((option) => (
+                    <option value={option.ItemName}>{option.ItemName}</option>
+                  ))
+                )}/>
           </label>
           <label>
             <p>Count</p>
