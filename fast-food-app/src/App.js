@@ -162,6 +162,7 @@ function App() {
   }
 
   useEffect(() => {
+    document.title = 'Burger Shrine';
     setLoading(true)
     //MENU
     getAPI('http://localhost:5000/menu/', setMenu, setLoading);
@@ -173,7 +174,6 @@ function App() {
     getAPI('http://localhost:5000/orders/items', setItemEntry, setLoading);
     //ORDER HISTORY
     getAPI('http://localhost:5000/orders/', setAllOrders, setLoading);
-
     //CURRENT ITEMS
     getAPI('http://localhost:5000/orders/', setCurrentItems, setLoading);
   }, [])
