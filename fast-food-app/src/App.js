@@ -29,9 +29,11 @@ function App() {
   const [orderData, setOrderData] = useReducer(formReducer, {});
   const [orderItem, setOrderItem] = useState([]);
 
-  const [filter, setFilter] = useState('');
 
   const [menu, setMenu] = useState([])
+  const [stores, setStores] = useState([])
+  const [customers, setCustomers] = useState([])
+  const [addresses, setAddresses] = useState([])
   const [loading, setLoading] = useState(false)
 
   const [submitting, setSubmitting] = useState(false);
@@ -41,12 +43,14 @@ function App() {
     setOrderItem([
       ...orderItem,
       {
-        customer: orderData.name,
+        customerID: orderData.customerID,
+        address: orderData.address,
         item: itemData.item,
         count: itemData.count,
         changes: itemData.changes,
         store: orderData.store,
-        payment: orderData.payment
+        payment: orderData.payment,
+        pickup: orderData.pickup
       }
     ]);
     setItemData({
@@ -77,10 +81,26 @@ function App() {
           setLoading(false)
         })
   }
+  const handleCustomerChange = event => {
+    setOrderData({
+      name: event.target.name,
+      value:event.target.value,
+    });
+    fetch('http://localhost:5000/customers/address?id=' + event.target.value, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+    })
+        .then(response => response.json())
+        .then(response => setAddresses(response))
+        .finally(() => {
+          setLoading(false)
+        })
+  }
 
   useEffect(() => {
     setLoading(true)
-    fetch('http://localhost:5000/menu/' + filter, {
+    //MENU
+    fetch('http://localhost:5000/menu/', {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
     })
@@ -89,6 +109,26 @@ function App() {
       .finally(() => {
         setLoading(false)
       })
+    //STORES
+    fetch('http://localhost:5000/info/stores', {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+    })
+      .then(response => response.json())
+      .then(response => setStores(response))
+      .finally(() => {
+        setLoading(false)
+      })
+    //Customers
+    fetch('http://localhost:5000/customers', {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+  })
+    .then(response => response.json())
+    .then(response => setCustomers(response))
+    .finally(() => {
+      setLoading(false)
+    })
   }, [])
   return(
     <div className = "wrapper">
@@ -117,22 +157,25 @@ function App() {
             <fieldset> 
               <label> 
                 <p>Select Customer</p>
-                <select name="name" onChange={handleOrderChange}>
+                <select name="customerID" onChange= {handleCustomerChange}>
                   <option value="">--Please choose an option--</option>
-                  <option value='Hakurei Reimu'>Hakurei Reimu</option>
-                  <option value='Kochiya Sanae'>Kochiya Sanae</option>
+                  {customers.customers?.map((option) => (
+                   <option value={option.CustomerID}>{option.Name}</option>
+                  ))}
                 </select>
                 <p>Select Customer Address</p>
-                <select name="name" onChange={handleOrderChange} disabled={!orderData.name}>
+                <select name="address" onChange={handleOrderChange} disabled={!orderData.customerID}>
                   <option value="">--Please choose an option--</option>
-                  <option value='Hakurei Reimu'>Hakurei Reimu</option>
-                  <option value='Kochiya Sanae'>Kochiya Sanae</option>
+                  {addresses.addresses?.map((option) => (
+                   <option value={option.StreetAddress}>{option.StreetAddress + ' ' + option.City}</option>
+                  ))}
                 </select>
                 <p>Select Store</p>
                 <select name="store" onChange={handleOrderChange}>
                   <option value="">--Please choose an option--</option>
-                  <option value='Geidontei'>Geidontei</option>
-                  <option value='Yosuzume Izakaya'>Yosuzume Izakaya</option>
+                  {stores.stores?.map((option) => (
+                   <option value={option.StoreNumber}>{option.StreetAddress + ' ' + option.City}</option>
+                  ))}
                 </select>
                 <p>Select Payment Type</p>
                 <select name="payment" onChange={handleOrderChange}>
@@ -141,15 +184,14 @@ function App() {
                   <option value="cash">Cash</option>
                   <option value="rewards">Rewards</option>
                   <option value="giftcard">Gift Card</option>
-                  
                 </select>
                 <p>Select Pickup Method</p>
-                <select name="payment" onChange={handleOrderChange}>
+                <select name="pickup" onChange={handleOrderChange}>
                   <option value="">--Please choose an option--</option>
-                  <option value="creditcard">Credit Card</option>
-                  <option value="cash">Cash</option>
-                  <option value="rewards">Rewards</option>
-                  <option value="giftcard">Gift Card</option>
+                  <option value="Dine in">Dine-in</option>
+                  <option value="Drive-thru">Drive-thru</option>
+                  <option value="Walk in">Walk in</option>
+                  <option value="Delivery">Delivery</option>
                   
                 </select>
               </label>
