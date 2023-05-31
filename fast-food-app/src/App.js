@@ -1,8 +1,6 @@
 import banner from './Banner.png'
 import {useReducer, useState, useEffect, React} from 'react'
 import './App.css';
-import Table from './Table';
-import menuData from './menu.json';
 import MenuTable from "./components/MenuTable";
 import SelectBox from "./components/SelectBox";
 import OrderTable from "./components/OrderTable";
