@@ -27,7 +27,7 @@ export default function MenuTable(props) {
                       <td>{item.Side}</td>
                       <td>{item.Drink}</td>
                       <td>{item.Calories}</td>
-                      <td>{item.Price}</td>
+                      <td>{'$' + item.Price}</td>
                     </tr>);
                   })
                 }
@@ -59,7 +59,7 @@ export default function MenuTable(props) {
                     <td>{item.ItemNumber}</td>
                     <td>{item.ItemName}</td>
                     <td>{item.Calories}</td>
-                    <td>{item.Price}</td>
+                    <td>{'$' + item.Price}</td>
                   </tr>);
                 })
               }
