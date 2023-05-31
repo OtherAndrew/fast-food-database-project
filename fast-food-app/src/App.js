@@ -5,6 +5,7 @@ import Table from './Table';
 import menuData from './menu.json';
 import MenuTable from "./components/MenuTable";
 import SelectBox from "./components/SelectBox";
+import OrderTable from "./components/OrderTable";
 
 //Help from tutorials: https://www.digitalocean.com/community/tutorials/how-to-build-forms-in-react
 
@@ -36,9 +37,12 @@ function App() {
   const [stores, setStores] = useState([])
   const [customers, setCustomers] = useState([])
   const [addresses, setAddresses] = useState([])
+  const [itemEntry, setItemEntry] = useState([])
   const [loading, setLoading] = useState(false)
 
   const [submitting, setSubmitting] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+
 
   const handleItemSubmit = event => {
     event.preventDefault();
@@ -59,7 +63,9 @@ function App() {
       reset: true
     })
   }
-
+  const handleShowHistory = event => {
+    showHistory?setShowHistory(false):setShowHistory(true)
+  }
   const handleOrderChange = event => {
     setOrderData({
       name: event.target.name,
@@ -110,7 +116,7 @@ function App() {
       .then(response => setMenu(response))
       .finally(() => {
         setLoading(false)
-      })
+    })
     //STORES
     fetch('http://localhost:5000/info/stores', {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -120,16 +126,26 @@ function App() {
       .then(response => setStores(response))
       .finally(() => {
         setLoading(false)
-      })
-    //Customers
+    })
+    //CUSTOMERS
     fetch('http://localhost:5000/customers', {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
-  })
-    .then(response => response.json())
-    .then(response => setCustomers(response))
-    .finally(() => {
-      setLoading(false)
+    })
+      .then(response => response.json())
+      .then(response => setCustomers(response))
+      .finally(() => {
+        setLoading(false)
+    })
+    //ITEM ENTRIES
+    fetch('http://localhost:5000/orders/items', {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+    })
+      .then(response => response.json())
+      .then(response => setItemEntry(response))
+      .finally(() => {
+        setLoading(false)
     })
   }, [])
   return(
@@ -224,7 +240,9 @@ function App() {
             <input name = "changes" onChange={handleItemChange} value={itemData.changes || ''}/>
           </label>
         </fieldset>
-          <button type = 'submit' disabled={submitting||!itemData.item||!itemData.count}>
+          <button type = 'submit' 
+            disabled={submitting||!itemData.item||!itemData.count||!orderData.customerID||!orderData.store
+            ||!orderData.payment||!orderData.pickup||!orderData.address}>
             Add to order</button>
         </form>
         {<div>
@@ -237,11 +255,16 @@ function App() {
           <h1>Current Order:</h1>
           <ul>
             {orderItem.map(orderItem => (
-              <li key={orderItem.item}>(<strong>{orderItem.count}</strong>) {orderItem.item}</li>
+              <li>{orderData.CustomerID}{orderItem.item}(<strong>{orderItem.count}</strong>)</li>
             ))}
             <li>OrderTotal: </li>
           </ul>
+          <></>
         </div>}
+        </header>
+        <header className='orderHistory'>
+          <button onClick={handleShowHistory}>Show All Orders</button>
+          {showHistory && <OrderTable orders = {itemEntry}/>}
         </header>
     </div>
   );

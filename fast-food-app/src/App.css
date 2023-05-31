@@ -18,6 +18,10 @@
   gap: 40px;
   justify-content: center;
 }
+.orderHistory{
+  gap: 40px;
+  justify-content: center;
+}
 .wrapper fieldset {
   margin: 20px 0;
 }
