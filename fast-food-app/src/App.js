@@ -304,7 +304,7 @@ function App() {
             <OrderTable orders = {allOrders}/>
           </div>
           <div>
-            <h1>All Items on Orders</h1>
+            <h1>All Items on Order</h1>
             <OrderItemTable orders = {itemEntry}/>
           </div>
         </header>}
