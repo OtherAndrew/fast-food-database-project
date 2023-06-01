@@ -1,5 +1,17 @@
 export default function MenuTable(props) {
   if (props.menu.combos) {
+    const listItems = props.menu.combos?.map(item =>
+        <tr key={item.ComboNumber}>
+          <td>{item.ComboNumber}</td>
+          <td>{item.ComboName}</td>
+          <td>{item.Entree}</td>
+          <td>{item.Side}</td>
+          <td>{item.Drink}</td>
+          <td>{item.Calories}</td>
+          <td>{'$' + item.Price}</td>
+        </tr>
+    );
+
     return (
       <div className="table">
         {props.loading
@@ -18,19 +30,7 @@ export default function MenuTable(props) {
                   <th>Calories</th>
                   <th>Price</th>
                 </tr>
-                {props.menu.combos?.map(item => {
-                  return (
-                    <tr key={item.ComboNumber}>
-                      <td>{item.ComboNumber}</td>
-                      <td>{item.ComboName}</td>
-                      <td>{item.Entree}</td>
-                      <td>{item.Side}</td>
-                      <td>{item.Drink}</td>
-                      <td>{item.Calories}</td>
-                      <td>{'$' + item.Price}</td>
-                    </tr>);
-                  })
-                }
+                {listItems}
               </tbody>
             </table>
           )
@@ -38,6 +38,15 @@ export default function MenuTable(props) {
       </div>
     );
   } else {
+    const listItems = props.menu.items?.map(item =>
+      <tr key={item.ItemNumber}>
+        <td>{item.ItemNumber}</td>
+        <td>{item.ItemName}</td>
+        <td>{item.Calories}</td>
+        <td>{'$' + item.Price}</td>
+      </tr>
+    );
+
     return (
       <div className="table">
         {props.loading
@@ -47,22 +56,13 @@ export default function MenuTable(props) {
           : (
             <table border={1}>
               <tbody>
-              <tr>
-                <th>Item #</th>
-                <th>Item</th>
-                <th>Calories</th>
-                <th>Price</th>
-              </tr>
-              {props.menu.items?.map(item => {
-                return (
-                  <tr key={item.ItemNumber}>
-                    <td>{item.ItemNumber}</td>
-                    <td>{item.ItemName}</td>
-                    <td>{item.Calories}</td>
-                    <td>{'$' + item.Price}</td>
-                  </tr>);
-                })
-              }
+                <tr>
+                  <th>Item #</th>
+                  <th>Item</th>
+                  <th>Calories</th>
+                  <th>Price</th>
+                </tr>
+                {listItems}
               </tbody>
             </table>
           )
