@@ -1,11 +1,11 @@
 # fast-food-database-project
 
-This is the React.js front-end for our Fast Food database project.
+This is the React.js frontend for our Fast Food database project.
 
 ## Description
 
-This project serves as the front-end for a customer ordering system for a fast food restaurant.
-It should be used in conjuction with [fast-food-web-service](https://github.com/OtherAndrew/fast-food-web-service).
+This project serves as the frontend for a customer ordering system for a fast food restaurant.
+It should be used in conjunction with [fast-food-web-service](https://github.com/OtherAndrew/fast-food-web-service).
 
 Users can view the menu, filter the menu by category, create orders, and add items to orders.
 
@@ -15,9 +15,9 @@ All the orders and items on order stored in the database can be viewed using the
 
 ### Dependencies
 
-* [Node.js](https://nodejs.org/en)
-* [npm](https://www.npmjs.com)
-* [React.js](https://react.dev)
+- [Node.js](https://nodejs.org/en)
+- [npm](https://www.npmjs.com)
+- [React.js](https://react.dev)
 
 ### Installing
 
@@ -37,7 +37,7 @@ Using MySQL, run `SetupTables.sql` to create tables and insert initial values in
 
 #### 2. Run web service
 
-In the directory containing the [web service](https://github.com/OtherAndrew/fast-food-web-service), run:
+In the directory containing the [web service](https://github.com/OtherAndrew/fast-food-web-service) (`fast-food-web-service`), run:
    
 ```shell
 npm run local
@@ -47,7 +47,7 @@ Open [http://localhost:5000](http://localhost:5000) to view the web service in y
 
 #### 3. Run web app
 
-In the `fast-food-app` directory, run:
+In the directory containing the [web app](https://github.com/OtherAndrew/fast-food-database-project) (`fast-food-app`), run:
 
 ```shell
 npm start
@@ -57,17 +57,13 @@ Open [http://localhost:3000](http://localhost:3000) to view the web app in your 
 
 ## Help
 
-Make sure both the database and web service are up and running before running the web app. 
+- Make sure both the database and web service are up and running before running the web app. 
 
 ## Authors
 
 - [Brian Nguyen](https://github.com/BrianNguyen636)
 - [Andrew Nguyen](https://github.com/OtherAndrew)
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details
-
 ## Acknowledgments
 
-* [README Template](https://gist.github.com/DomPizzie/7a5ff55ffa9081f2de27c315f5018afc)
+- [README Template](https://gist.github.com/DomPizzie/7a5ff55ffa9081f2de27c315f5018afc)
