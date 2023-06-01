@@ -6,21 +6,39 @@ import SelectBox from "./components/SelectBox";
 import OrderTable from "./components/OrderTable";
 import OrderItemTable from "./components/OrderItemTable";
 
+/**
+ * Frontend for database application.
+ *
+ * @author Brian Nguyen
+ */
+
 //Help from tutorials: https://www.digitalocean.com/community/tutorials/how-to-build-forms-in-react
 
-function getAPI(URL, Set, Loading) {
-  fetch(URL, {
+/**
+ * Sends a GET request to the URL.
+ * @param url     The URL.
+ * @param set     State variable setter function.
+ * @param loading Loading state variable setter function.
+ */
+function getAPI(url, set, loading) {
+  fetch(url, {
     method: "GET", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, *cors, same-origin
   })
     .then(response => response.json())
-    .then(response => Set(response))
-    .finally(() => {
-      Loading(false)
-  })
+    .then(response => set(response))
+    .finally(() => loading(false))
 }
+
+/**
+ * Reduces form values to single value.
+ * @param state Current form state.
+ * @param event Form setting.
+ * @return {{}|*} New form value.
+ */
 const formReducer = (state, event) => {
   if (event.reset) {
+    // brackets need to be here for some reason
     return {}
   }
   return {
@@ -28,7 +46,6 @@ const formReducer = (state, event) => {
     [event.name]: event.value
   }
 }
-
 
 function App() {
   const [itemData, setItemData] = useReducer(formReducer, {});
@@ -48,6 +65,10 @@ function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [customerComplete, setCustomerComplete] = useState(false);
 
+  /**
+   * Handles submitting a customer order.
+   * @param event Submitting a customer order.
+   */
   const handleCustomerSubmit = event => {
     event.preventDefault();
     setCustomerComplete(true);
@@ -78,8 +99,12 @@ function App() {
         getAPI('http://localhost:5000/orders/', setAllOrders, setLoading);
         setLoading(false)
       })
-
   }
+
+  /**
+   * Handles submitting an item.
+   * @param event Submitting an item.
+   */
   const handleItemSubmit = event => {
     event.preventDefault();
     setOrderItem([
@@ -121,9 +146,19 @@ function App() {
 
     setItemData({reset: true})
   }
+
+  /**
+   * Handles showing order history.
+   * @param event Showing order history.
+   */
   const handleShowHistory = event => {
     showHistory?setShowHistory(false):setShowHistory(true)
   }
+
+  /**
+   * Handles adding a new customer.
+   * @param event Adding a new customer.
+   */
   const handleNewCustomer = event => {
     setCustomerComplete(false)
     setOrderData({reset: true})
@@ -132,25 +167,45 @@ function App() {
     setCurrentItems([])
     setCurrentOrder([])
   }
+
+  /**
+   * Handles changing orders.
+   * @param event Changing orders.
+   */
   const handleOrderChange = event => {
     setOrderData({
       name: event.target.name,
       value:event.target.value,
     });
   }
+
+  /**
+   * Handles item change.
+   * @param event Item change.
+   */
   const handleItemChange = event => {
     setItemData({
       name: event.target.name,
       value:event.target.value,
     });
   }
+
+  /**
+   * Handles menu filter change.
+   * @param event Menu filter change.
+   */
   const handleFilterChange = event => {
     getAPI('http://localhost:5000/menu/' + event.target.value, setMenu, setLoading);
   }
+
+  /**
+   * Handles changing customers.
+   * @param event Changing customer.
+   */
   const handleCustomerChange = event => {
     setOrderData({
       name: event.target.name,
-      value:event.target.value,
+      value: event.target.value,
     });
     getAPI('http://localhost:5000/customers/address?id=' + event.target.value, setAddresses, setLoading);
   }
