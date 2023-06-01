@@ -1,3 +1,9 @@
+/**
+ * Returns a table of items on order.
+ * @param props Items on order.
+ * @return {JSX.Element} A table of items on order.
+ * @constructor
+ */
 export default function OrderItemTable(props) {
   const listItems = props.orders.items?.map(item =>
     <tr>

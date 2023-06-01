@@ -1,3 +1,9 @@
+/**
+ * Returns a menu table.
+ * @param props Menu items.
+ * @return {JSX.Element} A menu table.
+ * @constructor
+ */
 export default function MenuTable(props) {
   if (props.menu.combos) {
     const listItems = props.menu.combos?.map(item =>

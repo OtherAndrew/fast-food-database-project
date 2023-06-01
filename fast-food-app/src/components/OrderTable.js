@@ -1,3 +1,9 @@
+/**
+ * Returns a table of orders.
+ * @param props Order information.
+ * @return {JSX.Element} An order table.
+ * @constructor
+ */
 export default function OrderTable(props) {
   const listItems = props.orders.orders?.map(item =>
       <tr key={item.OrderNumber}>

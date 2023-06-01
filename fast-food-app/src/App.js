@@ -20,14 +20,8 @@ function getAPI(URL, Set, Loading) {
   })
 }
 const formReducer = (state, event) => {
-  if(event.reset) {
-    return {
-      // item: '',
-      // count: '',
-      // name: '',
-      // changes:'',
-      //'gift-wrap': false,
-    }
+  if (event.reset) {
+    return {}
   }
   return {
     ...state,
@@ -283,19 +277,14 @@ function App() {
             ||!orderData.payment||!orderData.pickup||!orderData.address}>
             Add to order</button>
         </form>
-        {<div>
-          <h1>Order Info:</h1>
-          <OrderTable orders = {currentOrder}/>
-          <h1>Current Order:</h1>
-          <OrderItemTable orders = {currentItems}/>
-
-          {/* <ul>
-            {orderItem &&orderItem.map(orderItem => (
-              <li>{orderData.CustomerID}{orderItem.item}(<strong>{orderItem.count}</strong>)</li>
-            ))}
-          </ul> */}
-          <></>
-        </div>}
+        {
+          <div>
+            <h1>Order Info:</h1>
+            <OrderTable orders = {currentOrder}/>
+            <h1>Current Order:</h1>
+            <OrderItemTable orders = {currentItems}/>
+          </div>
+        }
         </header>
         <header><button onClick={handleShowHistory}>Show All Orders</button></header>
         {showHistory && <header className='orderHistory'>
@@ -310,12 +299,6 @@ function App() {
         </header>}
     </div>
   );
-
 }
 
-//Checkbox template
-{/* <label>
-  <p>Gift Wrap</p>
-  <input type="checkbox" name="gift-wrap" onChange={handleItemChange} value={itemData.['gift-wrap'] || false}/>
-</label> */}
 export default App;
